@@ -1,5 +1,6 @@
 import 'package:call_log/call_log.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../models/call_log_model.dart';
@@ -9,10 +10,14 @@ import '../models/call_log_model.dart';
 /// they read from the system ContentProvider (READ_CALL_LOG permission).
 class CallLogService {
   /// Fetch all call logs from the device for the past N days.
+  /// Respects the user-configured fetch range stored in SharedPreferences.
   Future<List<CallLogModel>> fetchDeviceCallLogs() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final days = prefs.getInt(AppConstants.prefCallLogFetchDays) ??
+          AppConstants.callLogFetchDays;
       final cutoff = DateTime.now()
-          .subtract(Duration(days: AppConstants.callLogFetchDays))
+          .subtract(Duration(days: days))
           .millisecondsSinceEpoch;
 
       final Iterable<CallLogEntry> entries = await CallLog.query(

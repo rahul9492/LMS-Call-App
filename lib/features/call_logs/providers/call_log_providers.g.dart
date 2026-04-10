@@ -470,6 +470,51 @@ final class FilteredCallLogsProvider
 
 String _$filteredCallLogsHash() => r'e65eea58c967031ab94b0b8df0c8ba9d9632c316';
 
+@ProviderFor(CallLogFetchDays)
+const callLogFetchDaysProvider = CallLogFetchDaysProvider._();
+
+final class CallLogFetchDaysProvider
+    extends $AsyncNotifierProvider<CallLogFetchDays, int> {
+  const CallLogFetchDaysProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'callLogFetchDaysProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$callLogFetchDaysHash();
+
+  @$internal
+  @override
+  CallLogFetchDays create() => CallLogFetchDays();
+}
+
+String _$callLogFetchDaysHash() => r'cccffaf5bacd301d1b106f9cd14df6eeacc81a11';
+
+abstract class _$CallLogFetchDays extends $AsyncNotifier<int> {
+  FutureOr<int> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<int>, int>,
+              AsyncValue<int>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(syncSummary)
 const syncSummaryProvider = SyncSummaryProvider._();
 

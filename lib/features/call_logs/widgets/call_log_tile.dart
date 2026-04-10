@@ -4,6 +4,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/call_type_helpers.dart';
+import '../../../core/utils/intent_utils.dart';
 import '../../../data/models/call_log_model.dart';
 import '../../../core/extensions/datetime_extensions.dart';
 
@@ -172,11 +173,8 @@ class CallLogGroupTile extends ConsumerWidget {
               iconSize: 22,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Dialer coming soon')),
-                );
-              },
+              onPressed: () => IntentUtils.launchDialer(
+                    context, group.phoneNumber),
             ),
           ],
         ),

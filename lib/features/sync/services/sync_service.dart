@@ -5,6 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../data/repositories/call_log_repository.dart';
 import '../../../data/services/api_service.dart';
 import '../../../data/services/connectivity_service.dart';
+import '../../../data/services/notification_service.dart';
 
 /// Orchestrates the full offline-first sync cycle:
 /// 1. Fetch latest call logs from the device.
@@ -87,6 +88,16 @@ class SyncService {
       '[SyncService] Sync complete — device: $newFromDevice, '
       'uploaded: $uploaded, failed: $failed',
     );
+
+    // Show notification summarising the result
+    if (failed > 0) {
+      await NotificationService.showSyncFailure(failed: failed);
+    } else {
+      await NotificationService.showSyncSuccess(
+        uploaded: uploaded,
+        newFromDevice: newFromDevice,
+      );
+    }
 
     return SyncResult(
       newLogsFromDevice: newFromDevice,

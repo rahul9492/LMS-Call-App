@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -11,6 +13,11 @@ import '../models/call_log_model.dart';
 /// and the caller (sync service) handles retry logic.
 class ApiService {
   late final Dio _dio;
+
+  /// Fires when the server returns 401 (token expired / invalid).
+  /// The app listens to this stream and redirects to the login screen.
+  final _unauthorizedController = StreamController<void>.broadcast();
+  Stream<void> get onUnauthorized => _unauthorizedController.stream;
 
   ApiService() {
     _dio = Dio(
@@ -37,7 +44,7 @@ class ApiService {
       );
     }
 
-    // Auth interceptor — injects token from SharedPreferences
+    // Auth interceptor — injects token + handles 401
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -48,12 +55,27 @@ class ApiService {
           }
           handler.next(options);
         },
-        onError: (error, handler) {
+        onError: (error, handler) async {
+          if (error.response?.statusCode == 401) {
+            debugPrint('[ApiService] 401 Unauthorized — clearing auth');
+            // Clear stored credentials
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove(AppConstants.prefAuthToken);
+            await prefs.remove(AppConstants.prefUserId);
+            await prefs.remove(AppConstants.prefMobileNumber);
+            await prefs.remove(AppConstants.prefAuthUser);
+            // Notify listeners to redirect to login
+            _unauthorizedController.add(null);
+          }
           debugPrint('[ApiService] error: ${error.message}');
           handler.next(error);
         },
       ),
     );
+  }
+
+  void dispose() {
+    _unauthorizedController.close();
   }
 
   /// Upload a batch of call logs to the API.
@@ -71,7 +93,6 @@ class ApiService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Server returns accepted IDs; fall back to all submitted IDs
         final data = response.data as Map<String, dynamic>?;
         final accepted = data?['accepted_ids'] as List<dynamic>?;
         if (accepted != null) {
@@ -112,6 +133,8 @@ class ApiException implements Exception {
   final Object? cause;
 
   const ApiException(this.message, {this.statusCode, this.cause});
+
+  bool get isUnauthorized => statusCode == 401;
 
   @override
   String toString() =>

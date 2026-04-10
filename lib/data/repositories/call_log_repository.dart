@@ -60,6 +60,9 @@ class CallLogRepository {
 
   Future<void> markAsSyncing(List<String> ids) => _db.markAsSyncing(ids);
 
+  /// Reset all failed logs to pending so the next sync will retry them.
+  Future<void> retryFailed() => _db.resetFailedToPending();
+
   Future<SyncSummary> getSyncSummary() async {
     final counts = await _db.getSyncStatusCounts();
     return SyncSummary(

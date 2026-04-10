@@ -23,7 +23,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
 
   bool _isRequesting = false;
 
-  final List<_PermissionItem> _permissions = [
+  final List<_PermissionItem> _permissions = const [
     _PermissionItem(
       icon: Icons.phone_rounded,
       title: 'Phone & Call Logs',
@@ -193,7 +193,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
+                      const Text(
                         'Know who is calling before you answer',
                         style: TextStyle(
                           color: AppColors.textSecondary,
@@ -215,15 +215,15 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                             color: AppColors.primary.withValues(alpha: 0.2),
                           ),
                         ),
-                        child: Row(
+                        child: const Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.shield_rounded,
                               color: AppColors.primary,
                               size: 20,
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 'Your data is stored securely on your device and only synced to your organization\'s LMS server.',

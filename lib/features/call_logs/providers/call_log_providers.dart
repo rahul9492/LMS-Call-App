@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/models/call_log_model.dart';
 import '../../../data/repositories/call_log_repository.dart';
@@ -112,6 +113,24 @@ CallTypeEnum _filterToType(CallFilter f) {
       return CallTypeEnum.missed;
     case CallFilter.all:
       return CallTypeEnum.unknown;
+  }
+}
+
+// ── Call log fetch days ───────────────────────────────────────────────────
+
+@riverpod
+class CallLogFetchDays extends _$CallLogFetchDays {
+  @override
+  Future<int> build() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(AppConstants.prefCallLogFetchDays) ??
+        AppConstants.callLogFetchDays;
+  }
+
+  Future<void> setDays(int days) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(AppConstants.prefCallLogFetchDays, days);
+    state = AsyncValue.data(days);
   }
 }
 

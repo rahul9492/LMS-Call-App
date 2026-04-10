@@ -26,6 +26,7 @@ class AppConstants {
   static const String prefUserId = 'user_id';
   static const String prefMobileNumber = 'mobile_number';
   static const String prefAuthUser = 'auth_user';
+  static const String prefCallLogFetchDays = 'call_log_fetch_days';
 
   // Call log fetch
   static const int callLogFetchDays = 90; // Fetch last 90 days of call logs
@@ -45,4 +46,5 @@ class AppRoutes {
   static const String home = '/home';
   static const String callDetail = '/call-detail';
   static const String settings = '/settings';
+  static const String search = '/search';
 }

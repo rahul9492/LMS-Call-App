@@ -107,6 +107,16 @@ class AppDatabase extends _$AppDatabase {
     return {for (final row in rows) row.read<String>('sync_status'): row.read<int>('cnt')};
   }
 
+  /// Reset all failed logs back to pending so they can be retried
+  Future<void> resetFailedToPending() async {
+    await (update(callLogs)..where((t) => t.syncStatus.equals('failed'))).write(
+      const CallLogsCompanion(
+        syncStatus: Value('pending'),
+        syncError: Value(null),
+      ),
+    );
+  }
+
   /// Delete all logs (for reset)
   Future<void> clearAll() => delete(callLogs).go();
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/call_type_helpers.dart';
+import '../../../core/utils/intent_utils.dart';
 import '../../../data/models/call_log_model.dart';
 import '../../../core/extensions/datetime_extensions.dart';
 
@@ -156,9 +157,8 @@ class CallDetailScreen extends ConsumerWidget {
                       icon: Icons.call_rounded,
                       label: 'Call',
                       color: AppColors.incoming,
-                      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Dialer coming soon')),
-                      ),
+                      onTap: () => IntentUtils.launchDialer(
+                          context, group.phoneNumber),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -167,9 +167,8 @@ class CallDetailScreen extends ConsumerWidget {
                       icon: Icons.message_rounded,
                       label: 'Message',
                       color: AppColors.primary,
-                      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('SMS coming soon')),
-                      ),
+                      onTap: () =>
+                          IntentUtils.launchSms(context, group.phoneNumber),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -178,9 +177,8 @@ class CallDetailScreen extends ConsumerWidget {
                       icon: Icons.person_add_rounded,
                       label: 'Add contact',
                       color: AppColors.accent,
-                      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Add contact coming soon')),
-                      ),
+                      onTap: () => IntentUtils.launchAddContact(
+                          context, group.phoneNumber),
                     ),
                   ),
                 ],

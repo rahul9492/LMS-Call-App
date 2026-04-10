@@ -184,8 +184,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Icon(Icons.lock_outline_rounded,
                             size: 13, color: AppColors.textMuted),
                         SizedBox(width: 5),

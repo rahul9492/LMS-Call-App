@@ -84,7 +84,7 @@ final class AuthNotifierProvider
   AuthNotifier create() => AuthNotifier();
 }
 
-String _$authNotifierHash() => r'31d8242b5d1df57e8510f0d41b1690f6f0586f66';
+String _$authNotifierHash() => r'faa428318d6727a5978725f176045ca0173bc951';
 
 /// Holds the current authenticated user (null = logged out).
 ///

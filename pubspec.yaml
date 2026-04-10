@@ -46,6 +46,12 @@ dependencies:
   # Background Sync
   workmanager: ^0.9.0
 
+  # Dialer / SMS / Contacts intents
+  url_launcher: ^6.3.0
+
+  # Local notifications (background sync result)
+  flutter_local_notifications: ^18.0.0
+
   # Shared Preferences (for settings/flags)
   shared_preferences: ^2.3.2
 

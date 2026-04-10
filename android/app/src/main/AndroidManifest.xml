@@ -23,6 +23,10 @@
     <!-- ── Vibration (for call notifications) ── -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- ── Local notifications ── -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:label="LMS Call"
         android:name="${applicationName}"

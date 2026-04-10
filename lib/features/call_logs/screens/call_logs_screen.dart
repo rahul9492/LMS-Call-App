@@ -122,11 +122,8 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
         IconButton(
           icon: const Icon(Icons.search_rounded),
           color: AppColors.textSecondary,
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Search coming soon')),
-            );
-          },
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.search),
         ),
         IconButton(
           icon: const Icon(Icons.more_vert_rounded),
@@ -307,7 +304,7 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
           Container(
             width: 80,
             height: 80,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.surfaceVariant,
               shape: BoxShape.circle,
             ),

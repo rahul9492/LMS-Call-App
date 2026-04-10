@@ -7,6 +7,7 @@ import '../../../data/repositories/call_log_repository.dart';
 import '../../../data/services/api_service.dart';
 import '../../../data/services/call_log_service.dart';
 import '../../../data/services/connectivity_service.dart';
+import '../../../data/services/notification_service.dart';
 import '../services/sync_service.dart';
 
 /// Called by WorkManager in the background (separate isolate).
@@ -16,6 +17,9 @@ void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     debugPrint('[BackgroundSync] Task started: $taskName');
     try {
+      // Background isolate needs its own notification init
+      await NotificationService.initialize();
+
       final db = AppDatabase();
       final callLogSvc = CallLogService();
       final apiSvc = ApiService();
