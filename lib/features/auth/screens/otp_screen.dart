@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -249,8 +248,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                   ),
                   const SizedBox(height: 40),
 
-                  // Debug code banner (only shown in debug builds, never release)
-                  if (kDebugMode && _debugCode != null) ...[
+                  // OTP banner — always shown (remove this block when real SMS OTP is integrated)
+                  if (_debugCode != null) ...[
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
