@@ -1,0 +1,22 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    invalid_annotation_target: ignore
+    missing_required_param: warning
+    missing_return: warning
+
+linter:
+  rules:
+    avoid_print: false
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    sort_child_properties_last: false
+    use_key_in_widget_constructors: true
+    unnecessary_this: true
+    prefer_final_fields: true
+    unnecessary_brace_in_string_interps: true
+    prefer_single_quotes: true
