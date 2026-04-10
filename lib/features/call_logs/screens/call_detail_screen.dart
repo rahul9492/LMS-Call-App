@@ -178,7 +178,7 @@ class CallDetailScreen extends ConsumerWidget {
                       label: 'Add contact',
                       color: AppColors.accent,
                       onTap: () => IntentUtils.launchAddContact(
-                          context, group.phoneNumber),
+                          context, group.phoneNumber, name: group.contactName),
                     ),
                   ),
                 ],
