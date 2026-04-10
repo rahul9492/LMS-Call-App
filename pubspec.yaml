@@ -40,6 +40,9 @@ dependencies:
   # Call Log Access
   call_log: ^5.0.2
 
+  # Contacts lookup (match numbers to saved contact names)
+  flutter_contacts: ^1.1.9+2
+
   # Permissions
   permission_handler: ^11.3.1
 

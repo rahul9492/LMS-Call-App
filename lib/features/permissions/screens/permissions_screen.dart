@@ -101,7 +101,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
 
     if (mounted) {
       Navigator.of(context)
-          .pushReplacementNamed(AppRoutes.home);
+          .pushReplacementNamed(AppRoutes.login);
     }
   }
 
@@ -285,7 +285,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                             if (!mounted) return;
                             // ignore: use_build_context_synchronously
                             Navigator.of(context)
-                                .pushReplacementNamed(AppRoutes.home);
+                                .pushReplacementNamed(AppRoutes.login);
                           },
                     child: const Text(
                       "DON'T ALLOW",
