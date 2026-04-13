@@ -67,8 +67,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnim,
@@ -82,7 +83,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 72),
-                    // Logo / icon
                     Container(
                       width: 80,
                       height: 80,
@@ -101,19 +101,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       ),
                     ),
                     const SizedBox(height: 28),
-                    const Text(
+                    Text(
                       'LMS Call',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Enter your mobile number to continue',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: colors.textSecondary,
                         fontSize: 15,
                       ),
                       textAlign: TextAlign.center,
@@ -123,31 +123,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     // Country code + mobile field
                     Container(
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceVariant,
+                        color: colors.surfaceVariant,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: colors.border),
                       ),
                       child: Row(
                         children: [
-                          // Country code chip
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 16),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               border: Border(
-                                right: BorderSide(color: AppColors.border),
+                                right: BorderSide(color: colors.border),
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               '+91',
                               style: TextStyle(
-                                color: AppColors.textPrimary,
+                                color: colors.textPrimary,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
                             ),
                           ),
-                          // Mobile number input
                           Expanded(
                             child: TextFormField(
                               controller: _mobileController,
@@ -156,17 +154,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 FilteringTextInputFormatter.digitsOnly,
                                 LengthLimitingTextInputFormatter(10),
                               ],
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
+                              style: TextStyle(
+                                color: colors.textPrimary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: 'Mobile number',
+                                hintStyle: TextStyle(color: colors.textMuted),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 14, vertical: 16),
                               ),
                               validator: (val) {
@@ -184,15 +183,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const Row(
+                    Row(
                       children: [
                         Icon(Icons.lock_outline_rounded,
-                            size: 13, color: AppColors.textMuted),
-                        SizedBox(width: 5),
+                            size: 13, color: colors.textMuted),
+                        const SizedBox(width: 5),
                         Text(
                           'We\'ll send a verification code to this number',
                           style: TextStyle(
-                            color: AppColors.textMuted,
+                            color: colors.textMuted,
                             fontSize: 12,
                           ),
                         ),
@@ -200,7 +199,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     ),
                     const SizedBox(height: 36),
 
-                    // Send OTP button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -235,11 +233,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     ),
                     const SizedBox(height: 40),
 
-                    // Footer
-                    const Text(
+                    Text(
                       'By continuing, you agree to our Terms of Service\nand Privacy Policy.',
                       style: TextStyle(
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                         fontSize: 12,
                       ),
                       textAlign: TextAlign.center,

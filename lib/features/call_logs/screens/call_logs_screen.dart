@@ -22,7 +22,6 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
   @override
   void initState() {
     super.initState();
-    // Trigger device sync on first open
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(syncProvider.notifier).sync();
     });
@@ -36,11 +35,12 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final syncState = ref.watch(syncProvider);
     final filterState = ref.watch(activeCallFilterProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -54,14 +54,13 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
     );
   }
 
-  // ── AppBar ────────────────────────────────────────────────────────────────
-
   Widget _buildAppBar(AsyncValue syncState, bool innerBoxIsScrolled) {
+    final colors = context.colors;
     return SliverAppBar(
       floating: true,
       snap: true,
       pinned: false,
-      backgroundColor: AppColors.surface,
+      backgroundColor: colors.surface,
       title: Row(
         children: [
           Container(
@@ -77,10 +76,10 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
                 color: Colors.white, size: 18),
           ),
           const SizedBox(width: 10),
-          const Text(
+          Text(
             'LMS Call',
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
               fontWeight: FontWeight.w800,
               fontSize: 20,
             ),
@@ -88,7 +87,6 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
         ],
       ),
       actions: [
-        // Connectivity indicator
         Consumer(
           builder: (context, ref, _) {
             final online = ref.watch(isOnlineProvider);
@@ -97,7 +95,7 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
                 padding: const EdgeInsets.only(right: 4),
                 child: Icon(
                   isOnline ? Icons.cloud_done_rounded : Icons.cloud_off_rounded,
-                  color: isOnline ? AppColors.success : AppColors.textMuted,
+                  color: isOnline ? AppColors.success : colors.textMuted,
                   size: 20,
                 ),
               ),
@@ -106,7 +104,6 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
             );
           },
         ),
-        // Sync status
         if (syncState.isLoading)
           const Padding(
             padding: EdgeInsets.only(right: 16),
@@ -121,20 +118,17 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
           ),
         IconButton(
           icon: const Icon(Icons.search_rounded),
-          color: AppColors.textSecondary,
-          onPressed: () =>
-              Navigator.of(context).pushNamed(AppRoutes.search),
+          color: colors.textSecondary,
+          onPressed: () => Navigator.of(context).pushNamed(AppRoutes.search),
         ),
         IconButton(
           icon: const Icon(Icons.more_vert_rounded),
-          color: AppColors.textSecondary,
+          color: colors.textSecondary,
           onPressed: () => _showOptionsMenu(context),
         ),
       ],
     );
   }
-
-  // ── Sync status banner ────────────────────────────────────────────────────
 
   Widget _buildSyncBanner() {
     return SliverToBoxAdapter(
@@ -146,8 +140,7 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
               if (!s.hasUnsynced) return const SizedBox.shrink();
               return Container(
                 margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
                   color: AppColors.syncPending.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
@@ -172,11 +165,9 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () =>
-                          ref.read(syncProvider.notifier).sync(),
+                      onPressed: () => ref.read(syncProvider.notifier).sync(),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
@@ -201,14 +192,13 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
     );
   }
 
-  // ── Filter chips ──────────────────────────────────────────────────────────
-
   Widget _buildFilterBar(CallFilter activeFilter) {
+    final colors = context.colors;
     return SliverPersistentHeader(
       pinned: true,
       delegate: _FilterBarDelegate(
         child: Container(
-          color: AppColors.background,
+          color: colors.background,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -223,25 +213,21 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
                     onSelected: (_) => ref
                         .read(activeCallFilterProvider.notifier)
                         .setFilter(f),
-                    backgroundColor: AppColors.surfaceVariant,
+                    backgroundColor: colors.surfaceVariant,
                     selectedColor: AppColors.primary.withValues(alpha: 0.2),
                     checkmarkColor: AppColors.primary,
                     labelStyle: TextStyle(
-                      color: isActive ? AppColors.primary : AppColors.textSecondary,
-                      fontWeight:
-                          isActive ? FontWeight.w600 : FontWeight.normal,
+                      color: isActive ? AppColors.primary : colors.textSecondary,
+                      fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                       fontSize: 13,
                     ),
                     side: BorderSide(
-                      color: isActive
-                          ? AppColors.primary
-                          : AppColors.border,
+                      color: isActive ? AppColors.primary : colors.border,
                       width: isActive ? 1.5 : 0.5,
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                   ),
                 );
               }).toList(),
@@ -251,8 +237,6 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
       ),
     );
   }
-
-  // ── Call log list ─────────────────────────────────────────────────────────
 
   Widget _buildCallLogList() {
     return Consumer(
@@ -270,17 +254,18 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
   }
 
   Widget _buildGroupedList(List<CallLogGroup> groups) {
+    final colors = context.colors;
     return RefreshIndicator(
       color: AppColors.primary,
-      backgroundColor: AppColors.card,
+      backgroundColor: colors.card,
       onRefresh: () => ref.read(syncProvider.notifier).sync(),
       child: ListView.separated(
         padding: const EdgeInsets.only(top: 8, bottom: 100),
         itemCount: groups.length,
-        separatorBuilder: (_, __) => const Divider(
+        separatorBuilder: (_, __) => Divider(
           height: 0.5,
           indent: 82,
-          color: AppColors.divider,
+          color: colors.divider,
         ),
         itemBuilder: (context, index) {
           final group = groups[index];
@@ -297,6 +282,7 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
   }
 
   Widget _buildEmptyState() {
+    final colors = context.colors;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -304,31 +290,31 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
           Container(
             width: 80,
             height: 80,
-            decoration: const BoxDecoration(
-              color: AppColors.surfaceVariant,
+            decoration: BoxDecoration(
+              color: colors.surfaceVariant,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.phone_missed_rounded,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
               size: 36,
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'No call logs found',
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Pull down to refresh or tap sync\nto load your call history.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: colors.textSecondary,
               fontSize: 14,
               height: 1.5,
             ),
@@ -339,19 +325,19 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
   }
 
   Widget _buildErrorState(Object error) {
+    final colors = context.colors;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline_rounded,
-                color: AppColors.error, size: 48),
+            const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 48),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Something went wrong',
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -360,12 +346,11 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
             Text(
               error.toString(),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: TextStyle(color: colors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () =>
-                  ref.read(syncProvider.notifier).sync(),
+              onPressed: () => ref.read(syncProvider.notifier).sync(),
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
             ),
@@ -376,9 +361,10 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
   }
 
   Widget _buildShimmerList() {
+    final colors = context.colors;
     return Shimmer.fromColors(
-      baseColor: AppColors.surfaceVariant,
-      highlightColor: AppColors.card,
+      baseColor: colors.surfaceVariant,
+      highlightColor: colors.card,
       child: ListView.builder(
         itemCount: 10,
         itemBuilder: (_, __) => Padding(
@@ -407,8 +393,6 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
     );
   }
 
-  // ── FAB ───────────────────────────────────────────────────────────────────
-
   Widget _buildSyncFab(AsyncValue syncState) {
     return FloatingActionButton.extended(
       onPressed: syncState.isLoading
@@ -419,24 +403,21 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
           ? const SizedBox(
               width: 20,
               height: 20,
-              child: CircularProgressIndicator(
-                  color: Colors.white, strokeWidth: 2),
+              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
             )
           : const Icon(Icons.sync_rounded, color: Colors.white),
       label: Text(
         syncState.isLoading ? 'Syncing…' : 'Sync',
-        style: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.w600),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
       ),
     );
   }
 
-  // ── Options menu ──────────────────────────────────────────────────────────
-
   void _showOptionsMenu(BuildContext context) {
+    final colors = context.colors;
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.card,
+      backgroundColor: colors.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -449,14 +430,13 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: colors.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.settings_rounded,
-                  color: AppColors.textSecondary),
+              leading: Icon(Icons.settings_rounded, color: colors.textSecondary),
               title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
@@ -464,8 +444,7 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
               },
             ),
             ListTile(
-              leading:
-                  const Icon(Icons.sync_rounded, color: AppColors.textSecondary),
+              leading: Icon(Icons.sync_rounded, color: colors.textSecondary),
               title: const Text('Force sync now'),
               onTap: () {
                 Navigator.pop(context);
@@ -481,34 +460,23 @@ class _CallLogsScreenState extends ConsumerState<CallLogsScreen> {
 
   String _filterLabel(CallFilter f) {
     switch (f) {
-      case CallFilter.all:
-        return 'All';
-      case CallFilter.incoming:
-        return 'Incoming';
-      case CallFilter.outgoing:
-        return 'Outgoing';
-      case CallFilter.missed:
-        return 'Missed';
+      case CallFilter.all:      return 'All';
+      case CallFilter.incoming: return 'Incoming';
+      case CallFilter.outgoing: return 'Outgoing';
+      case CallFilter.missed:   return 'Missed';
     }
   }
 }
-
-// ── Filter bar delegate ───────────────────────────────────────────────────
 
 class _FilterBarDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   const _FilterBarDelegate({required this.child});
 
   @override
-  Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent) =>
-      child;
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => child;
 
-  @override
-  double get maxExtent => 52;
-
-  @override
-  double get minExtent => 52;
+  @override double get maxExtent => 52;
+  @override double get minExtent => 52;
 
   @override
   bool shouldRebuild(covariant _FilterBarDelegate oldDelegate) =>

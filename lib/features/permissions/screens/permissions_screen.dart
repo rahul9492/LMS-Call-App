@@ -45,20 +45,11 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
   @override
   void initState() {
     super.initState();
-    _fadeCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-    _slideCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
+    _fadeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _slideCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _fadeAnim = CurvedAnimation(parent: _fadeCtrl, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _slideCtrl, curve: Curves.easeOut));
-
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _slideCtrl, curve: Curves.easeOut));
     _fadeCtrl.forward();
     Future.delayed(const Duration(milliseconds: 200), _slideCtrl.forward);
   }
@@ -72,53 +63,40 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
 
   Future<void> _requestPermissions() async {
     setState(() => _isRequesting = true);
-
-    // Request all permissions
-    final statuses = await [
-      Permission.phone,
-      Permission.contacts,
-    ].request();
-
-    final phoneGranted =
-        statuses[Permission.phone]?.isGranted ?? false;
+    final statuses = await [Permission.phone, Permission.contacts].request();
+    final phoneGranted = statuses[Permission.phone]?.isGranted ?? false;
 
     if (!phoneGranted) {
       setState(() => _isRequesting = false);
-      if (mounted) {
-        _showPermissionDeniedDialog();
-      }
+      if (mounted) _showPermissionDeniedDialog();
       return;
     }
 
-    // Mark onboarding complete
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.prefOnboardingComplete, true);
-
-    // Register background sync
     await BackgroundSyncManager.registerPeriodicSync();
-
     setState(() => _isRequesting = false);
 
     if (mounted) {
-      Navigator.of(context)
-          .pushReplacementNamed(AppRoutes.login);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
     }
   }
 
   void _showPermissionDeniedDialog() {
+    final colors = context.colors;
     showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.card,
+        backgroundColor: colors.card,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
+        title: Text(
           'Permission Required',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+          style: TextStyle(color: colors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        content: const Text(
+        content: Text(
           'LMS Call needs access to your call logs to work properly. '
           'Please grant the Phone permission in settings.',
-          style: TextStyle(color: AppColors.textSecondary),
+          style: TextStyle(color: colors.textSecondary),
         ),
         actions: [
           TextButton(
@@ -139,8 +117,9 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnim,
@@ -150,7 +129,6 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 48),
-                // App logo / icon
                 Center(
                   child: Container(
                     width: 80,
@@ -170,11 +148,8 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.phone_in_talk_rounded,
-                      color: Colors.white,
-                      size: 40,
-                    ),
+                    child: const Icon(Icons.phone_in_talk_rounded,
+                        color: Colors.white, size: 40),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -183,29 +158,27 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'LMS Call',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: colors.textPrimary,
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Know who is calling before you answer',
                         style: TextStyle(
-                          color: AppColors.textSecondary,
+                          color: colors.textSecondary,
                           fontSize: 16,
                           height: 1.5,
                         ),
                       ),
                       const SizedBox(height: 48),
-                      // Permission cards
                       ..._permissions.map((item) => _PermissionCard(item: item)),
                       const SizedBox(height: 16),
-                      // Privacy note
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -215,20 +188,17 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                             color: AppColors.primary.withValues(alpha: 0.2),
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.shield_rounded,
-                              color: AppColors.primary,
-                              size: 20,
-                            ),
-                            SizedBox(width: 12),
+                            const Icon(Icons.shield_rounded,
+                                color: AppColors.primary, size: 20),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 'Your data is stored securely on your device and only synced to your organization\'s LMS server.',
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: colors.textSecondary,
                                   fontSize: 13,
                                   height: 1.5,
                                 ),
@@ -241,7 +211,6 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                   ),
                 ),
                 const Spacer(),
-                // Allow button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -250,8 +219,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                          borderRadius: BorderRadius.circular(16)),
                       elevation: 0,
                     ),
                     child: _isRequesting
@@ -259,9 +227,7 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2.5,
-                            ),
+                                color: Colors.white, strokeWidth: 2.5),
                           )
                         : const Text(
                             'ALLOW',
@@ -287,10 +253,10 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
                             Navigator.of(context)
                                 .pushReplacementNamed(AppRoutes.login);
                           },
-                    child: const Text(
+                    child: Text(
                       "DON'T ALLOW",
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: colors.textSecondary,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8,
                       ),
@@ -306,8 +272,6 @@ class _PermissionsScreenState extends ConsumerState<PermissionsScreen>
     );
   }
 }
-
-// ── Permission item model ────────────────────────────────────────────────
 
 class _PermissionItem {
   final IconData icon;
@@ -325,23 +289,21 @@ class _PermissionItem {
   });
 }
 
-// ── Permission card widget ───────────────────────────────────────────────
-
 class _PermissionCard extends StatelessWidget {
   final _PermissionItem item;
-
   const _PermissionCard({required this.item});
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: colors.card,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border, width: 0.5),
+          border: Border.all(color: colors.border, width: 0.5),
         ),
         child: Row(
           children: [
@@ -363,8 +325,8 @@ class _PermissionCard extends StatelessWidget {
                     children: [
                       Text(
                         item.title,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
+                        style: TextStyle(
+                          color: colors.textPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
                         ),
@@ -393,8 +355,8 @@ class _PermissionCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     item.description,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
+                    style: TextStyle(
+                      color: colors.textSecondary,
                       fontSize: 13,
                       height: 1.4,
                     ),

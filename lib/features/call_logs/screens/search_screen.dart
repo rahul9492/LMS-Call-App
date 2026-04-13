@@ -28,22 +28,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: colors.surface,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
-          color: AppColors.textPrimary,
+          color: colors.textPrimary,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: TextField(
           controller: _controller,
           autofocus: true,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
-          decoration: const InputDecoration(
+          style: TextStyle(color: colors.textPrimary, fontSize: 16),
+          decoration: InputDecoration(
             hintText: 'Search by name or number…',
-            hintStyle: TextStyle(color: AppColors.textMuted),
+            hintStyle: TextStyle(color: colors.textMuted),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
@@ -56,7 +57,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           if (_query.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.clear_rounded),
-              color: AppColors.textSecondary,
+              color: colors.textSecondary,
               onPressed: () {
                 _controller.clear();
                 setState(() => _query = '');
@@ -69,23 +70,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildEmptyPrompt() {
-    return const Center(
+    final colors = context.colors;
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_rounded, color: AppColors.textMuted, size: 56),
-          SizedBox(height: 16),
+          Icon(Icons.search_rounded, color: colors.textMuted, size: 56),
+          const SizedBox(height: 16),
           Text(
             'Search call logs',
             style: TextStyle(
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
                 fontSize: 16,
                 fontWeight: FontWeight.w500),
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(
             'Enter a name or phone number',
-            style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            style: TextStyle(color: colors.textMuted, fontSize: 13),
           ),
         ],
       ),
@@ -93,6 +95,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildResults() {
+    final colors = context.colors;
     final groupsAsync = ref.watch(groupedCallLogsProvider);
     return groupsAsync.when(
       data: (groups) {
@@ -107,13 +110,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.search_off_rounded,
-                    color: AppColors.textMuted, size: 48),
+                Icon(Icons.search_off_rounded, color: colors.textMuted, size: 48),
                 const SizedBox(height: 16),
                 Text(
                   'No results for "$_query"',
-                  style: const TextStyle(
-                      color: AppColors.textSecondary, fontSize: 15),
+                  style: TextStyle(color: colors.textSecondary, fontSize: 15),
                 ),
               ],
             ),
@@ -123,10 +124,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         return ListView.separated(
           padding: const EdgeInsets.only(top: 8, bottom: 32),
           itemCount: matched.length,
-          separatorBuilder: (_, __) => const Divider(
+          separatorBuilder: (_, __) => Divider(
             height: 0.5,
             indent: 82,
-            color: AppColors.divider,
+            color: colors.divider,
           ),
           itemBuilder: (context, i) => _SearchResultTile(group: matched[i]),
         );
@@ -147,6 +148,7 @@ class _SearchResultTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (group.calls.isEmpty) return const SizedBox.shrink();
+    final colors = context.colors;
     final lastCall = group.calls.first;
     final color = CallTypeHelpers.colorForType(group.lastCallType);
     final icon = CallTypeHelpers.iconForType(group.lastCallType);
@@ -159,7 +161,6 @@ class _SearchResultTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            // Avatar
             Container(
               width: 48,
               height: 48,
@@ -171,9 +172,7 @@ class _SearchResultTile extends StatelessWidget {
                 child: Text(
                   CallTypeHelpers.initials(displayName),
                   style: TextStyle(
-                      color: color,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16),
+                      color: color, fontWeight: FontWeight.w700, fontSize: 16),
                 ),
               ),
             ),
@@ -184,8 +183,8 @@ class _SearchResultTile extends StatelessWidget {
                 children: [
                   Text(
                     displayName,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary,
+                    style: TextStyle(
+                        color: colors.textPrimary,
                         fontWeight: FontWeight.w600,
                         fontSize: 15),
                     maxLines: 1,
@@ -206,22 +205,20 @@ class _SearchResultTile extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         '· ${lastCall.timestamp.dateTimeFormatted}',
-                        style: const TextStyle(
-                            color: AppColors.textMuted, fontSize: 12),
+                        style:
+                            TextStyle(color: colors.textMuted, fontSize: 12),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            // Quick call button
             IconButton(
               icon: const Icon(Icons.call_rounded),
               color: AppColors.primary,
               iconSize: 20,
               padding: EdgeInsets.zero,
-              constraints:
-                  const BoxConstraints(minWidth: 36, minHeight: 36),
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               onPressed: () =>
                   IntentUtils.launchDialer(context, group.phoneNumber),
             ),

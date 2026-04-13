@@ -15,28 +15,28 @@ class CallDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final displayName = group.contactName ?? group.phoneNumber;
     final initials = CallTypeHelpers.initials(displayName);
     final typeColor = CallTypeHelpers.colorForType(group.lastCallType);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: CustomScrollView(
         slivers: [
-          // ── Hero header ──────────────────────────────────────────────────
           SliverAppBar(
             expandedHeight: 280,
             pinned: true,
-            backgroundColor: AppColors.surface,
+            backgroundColor: colors.surface,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_rounded),
-              color: AppColors.textPrimary,
+              color: colors.textPrimary,
               onPressed: () => Navigator.of(context).pop(),
             ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.copy_rounded),
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: group.phoneNumber));
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -53,7 +53,7 @@ class CallDetailScreen extends ConsumerWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       typeColor.withValues(alpha: 0.15),
-                      AppColors.surface,
+                      colors.surface,
                     ],
                   ),
                 ),
@@ -63,7 +63,6 @@ class CallDetailScreen extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 28),
-                      // Avatar
                       Container(
                         width: 80,
                         height: 80,
@@ -89,8 +88,8 @@ class CallDetailScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
                           displayName,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
+                          style: TextStyle(
+                            color: colors.textPrimary,
                             fontWeight: FontWeight.w800,
                             fontSize: 22,
                           ),
@@ -108,15 +107,14 @@ class CallDetailScreen extends ConsumerWidget {
                           },
                           child: Text(
                             group.phoneNumber,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
+                            style: TextStyle(
+                              color: colors.textSecondary,
                               fontSize: 15,
                             ),
                           ),
                         ),
                       ],
                       const SizedBox(height: 8),
-                      // Stats row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -146,7 +144,6 @@ class CallDetailScreen extends ConsumerWidget {
             ),
           ),
 
-          // ── Action buttons ───────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
@@ -157,8 +154,8 @@ class CallDetailScreen extends ConsumerWidget {
                       icon: Icons.call_rounded,
                       label: 'Call',
                       color: AppColors.incoming,
-                      onTap: () => IntentUtils.launchDialer(
-                          context, group.phoneNumber),
+                      onTap: () =>
+                          IntentUtils.launchDialer(context, group.phoneNumber),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -178,7 +175,8 @@ class CallDetailScreen extends ConsumerWidget {
                       label: 'Add contact',
                       color: AppColors.accent,
                       onTap: () => IntentUtils.launchAddContact(
-                          context, group.phoneNumber, name: group.contactName),
+                          context, group.phoneNumber,
+                          name: group.contactName),
                     ),
                   ),
                 ],
@@ -186,39 +184,41 @@ class CallDetailScreen extends ConsumerWidget {
             ),
           ),
 
-          // ── Call history list ────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-              child: Row(
-                children: [
-                  const Text(
-                    'Call History',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '${group.totalCalls}',
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+              child: Builder(builder: (context) {
+                final colors = context.colors;
+                return Row(
+                  children: [
+                    Text(
+                      'Call History',
+                      style: TextStyle(
+                        color: colors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
                       ),
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: colors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '${group.totalCalls}',
+                        style: TextStyle(
+                          color: colors.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
 
@@ -244,8 +244,6 @@ class CallDetailScreen extends ConsumerWidget {
   }
 }
 
-// ── Stat chip ────────────────────────────────────────────────────────────────
-
 class _StatChip extends StatelessWidget {
   final String label;
   final String sublabel;
@@ -259,6 +257,7 @@ class _StatChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -278,18 +277,13 @@ class _StatChip extends StatelessWidget {
           ),
           Text(
             sublabel,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 11,
-            ),
+            style: TextStyle(color: colors.textSecondary, fontSize: 11),
           ),
         ],
       ),
     );
   }
 }
-
-// ── Action button ─────────────────────────────────────────────────────────────
 
 class _ActionButton extends StatelessWidget {
   final IconData icon;
@@ -334,8 +328,6 @@ class _ActionButton extends StatelessWidget {
   }
 }
 
-// ── Call history item ─────────────────────────────────────────────────────────
-
 class _CallHistoryItem extends StatelessWidget {
   final CallLogModel call;
 
@@ -343,6 +335,7 @@ class _CallHistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final color = CallTypeHelpers.colorForType(call.callType);
     final icon = CallTypeHelpers.iconForType(call.callType);
 
@@ -350,9 +343,9 @@ class _CallHistoryItem extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: colors.card,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 0.5),
+        border: Border.all(color: colors.border, width: 0.5),
       ),
       child: Row(
         children: [
@@ -381,10 +374,7 @@ class _CallHistoryItem extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   call.timestamp.dateTimeFormatted,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: colors.textSecondary, fontSize: 12),
                 ),
               ],
             ),
@@ -395,8 +385,8 @@ class _CallHistoryItem extends StatelessWidget {
               if (call.durationSeconds > 0)
                 Text(
                   call.durationSeconds.secondsToCallDuration,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: colors.textPrimary,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
@@ -404,10 +394,7 @@ class _CallHistoryItem extends StatelessWidget {
               if (call.ringDurationSeconds > 0)
                 Text(
                   call.ringDurationSeconds.secondsToRingDuration,
-                  style: const TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 11,
-                  ),
+                  style: TextStyle(color: colors.textMuted, fontSize: 11),
                 ),
               const SizedBox(height: 4),
               _SyncBadge(status: call.syncStatus),
@@ -417,10 +404,7 @@ class _CallHistoryItem extends StatelessWidget {
       ),
     );
   }
-
 }
-
-// ── Sync badge ────────────────────────────────────────────────────────────────
 
 class _SyncBadge extends StatelessWidget {
   final SyncStatus status;

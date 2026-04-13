@@ -12,13 +12,14 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
     final syncSummaryAsync = ref.watch(syncSummaryProvider);
     final onlineAsync = ref.watch(connectivityStreamProvider);
     final authAsync = ref.watch(authProvider);
     final fetchDaysAsync = ref.watch(callLogFetchDaysProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
         title: const Text('Settings'),
         leading: IconButton(
@@ -29,7 +30,7 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // ── Account / Profile ──────────────────────────────────────────
+          // ── Account ───────────────────────────────────────────────────────
           _SectionCard(
             title: 'Account',
             children: [
@@ -59,8 +60,8 @@ class SettingsScreen extends ConsumerWidget {
                                   children: [
                                     Text(
                                       '+91 ${user.mobileNumber}',
-                                      style: const TextStyle(
-                                        color: AppColors.textPrimary,
+                                      style: TextStyle(
+                                        color: colors.textPrimary,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 16,
                                       ),
@@ -68,8 +69,8 @@ class SettingsScreen extends ConsumerWidget {
                                     const SizedBox(height: 2),
                                     Text(
                                       'ID: ${user.userId}',
-                                      style: const TextStyle(
-                                        color: AppColors.textMuted,
+                                      style: TextStyle(
+                                        color: colors.textMuted,
                                         fontSize: 12,
                                       ),
                                     ),
@@ -79,7 +80,7 @@ class SettingsScreen extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          const Divider(color: AppColors.divider, height: 1),
+                          Divider(color: colors.divider, height: 1),
                         ],
                       )
                     : const SizedBox.shrink(),
@@ -100,17 +101,17 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 title: const Text('Logout',
                     style: TextStyle(color: AppColors.error)),
-                subtitle: const Text('Sign out of your account'),
-                trailing: const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textMuted),
+                subtitle: Text('Sign out of your account',
+                    style: TextStyle(color: colors.textSecondary)),
+                trailing: Icon(Icons.chevron_right_rounded,
+                    color: colors.textMuted),
                 onTap: () async {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      backgroundColor: AppColors.card,
+                      backgroundColor: colors.card,
                       title: const Text('Logout'),
-                      content:
-                          const Text('Are you sure you want to logout?'),
+                      content: const Text('Are you sure you want to logout?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(ctx, false),
@@ -140,7 +141,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // ── Sync Status ────────────────────────────────────────────────
+          // ── Sync Status ───────────────────────────────────────────────────
           _SectionCard(
             title: 'Sync Status',
             children: [
@@ -152,7 +153,7 @@ class SettingsScreen extends ConsumerWidget {
                       value: '${s.totalPending}',
                       valueColor: s.totalPending > 0
                           ? AppColors.syncPending
-                          : AppColors.textSecondary,
+                          : colors.textSecondary,
                     ),
                     _InfoRow(
                       label: 'Synced',
@@ -164,13 +165,13 @@ class SettingsScreen extends ConsumerWidget {
                       value: '${s.totalFailed}',
                       valueColor: s.totalFailed > 0
                           ? AppColors.syncFailed
-                          : AppColors.textSecondary,
+                          : colors.textSecondary,
                     ),
                     if (s.lastSyncTime != null)
                       _InfoRow(
                         label: 'Last sync',
                         value: _formatDateTime(s.lastSyncTime!),
-                        valueColor: AppColors.textSecondary,
+                        valueColor: colors.textSecondary,
                       ),
                   ],
                 ),
@@ -181,7 +182,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // ── Connectivity ───────────────────────────────────────────────
+          // ── Connectivity ──────────────────────────────────────────────────
           _SectionCard(
             title: 'Connectivity',
             children: [
@@ -189,8 +190,7 @@ class SettingsScreen extends ConsumerWidget {
                 data: (isOnline) => _InfoRow(
                   label: 'Status',
                   value: isOnline ? 'Online' : 'Offline',
-                  valueColor:
-                      isOnline ? AppColors.success : AppColors.error,
+                  valueColor: isOnline ? AppColors.success : AppColors.error,
                 ),
                 loading: () => const LinearProgressIndicator(),
                 error: (_, __) => const Text('Unknown'),
@@ -199,7 +199,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // ── Actions ────────────────────────────────────────────────────
+          // ── Actions ───────────────────────────────────────────────────────
           _SectionCard(
             title: 'Actions',
             children: [
@@ -213,7 +213,7 @@ class SettingsScreen extends ConsumerWidget {
                   Navigator.pop(context);
                 },
               ),
-              const Divider(color: AppColors.divider, height: 1),
+              Divider(color: colors.divider, height: 1),
               _ActionTile(
                 icon: Icons.refresh_rounded,
                 iconColor: AppColors.incoming,
@@ -224,8 +224,7 @@ class SettingsScreen extends ConsumerWidget {
                   Navigator.pop(context);
                 },
               ),
-              const Divider(color: AppColors.divider, height: 1),
-              // Retry failed — only shown when there are failures
+              Divider(color: colors.divider, height: 1),
               syncSummaryAsync.maybeWhen(
                 data: (s) => s.totalFailed > 0
                     ? Column(
@@ -236,15 +235,14 @@ class SettingsScreen extends ConsumerWidget {
                             title: 'Retry failed (${s.totalFailed})',
                             subtitle: 'Reset failed logs and retry on next sync',
                             onTap: () async {
-                              final repo =
-                                  ref.read(callLogRepositoryProvider);
+                              final repo = ref.read(callLogRepositoryProvider);
                               await repo.retryFailed();
                               ref.invalidate(syncSummaryProvider);
                               ref.read(syncProvider.notifier).sync();
                               if (context.mounted) Navigator.pop(context);
                             },
                           ),
-                          const Divider(color: AppColors.divider, height: 1),
+                          Divider(color: colors.divider, height: 1),
                         ],
                       )
                     : const SizedBox.shrink(),
@@ -254,7 +252,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // ── Call Log Settings ──────────────────────────────────────────
+          // ── Call Log Settings ─────────────────────────────────────────────
           _SectionCard(
             title: 'Call Log Settings',
             children: [
@@ -262,8 +260,7 @@ class SettingsScreen extends ConsumerWidget {
                 data: (days) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _InfoRow(
-                        label: 'Fetch range', value: '$days days'),
+                    _InfoRow(label: 'Fetch range', value: '$days days'),
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -279,12 +276,12 @@ class SettingsScreen extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? AppColors.primary
-                                  : AppColors.surfaceVariant,
+                                  : colors.surfaceVariant,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: isSelected
                                     ? AppColors.primary
-                                    : AppColors.border,
+                                    : colors.border,
                               ),
                             ),
                             child: Text(
@@ -292,7 +289,7 @@ class SettingsScreen extends ConsumerWidget {
                               style: TextStyle(
                                 color: isSelected
                                     ? Colors.white
-                                    : AppColors.textSecondary,
+                                    : colors.textSecondary,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
                               ),
@@ -302,10 +299,9 @@ class SettingsScreen extends ConsumerWidget {
                       }).toList(),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Changes apply on next refresh',
-                      style: TextStyle(
-                          color: AppColors.textMuted, fontSize: 11),
+                      style: TextStyle(color: colors.textMuted, fontSize: 11),
                     ),
                   ],
                 ),
@@ -316,7 +312,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // ── About ──────────────────────────────────────────────────────
+          // ── About ─────────────────────────────────────────────────────────
           const _SectionCard(
             title: 'About',
             children: [
@@ -347,11 +343,12 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: colors.card,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 0.5),
+        border: Border.all(color: colors.border, width: 0.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,15 +357,15 @@ class _SectionCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
             child: Text(
               title,
-              style: const TextStyle(
-                color: AppColors.textMuted,
+              style: TextStyle(
+                color: colors.textMuted,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.8,
               ),
             ),
           ),
-          const Divider(color: AppColors.divider, height: 0),
+          Divider(color: colors.divider, height: 0),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(children: children),
@@ -398,6 +395,7 @@ class _ActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Container(
@@ -410,9 +408,9 @@ class _ActionTile extends StatelessWidget {
         child: Icon(icon, color: iconColor, size: 20),
       ),
       title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: const Icon(Icons.chevron_right_rounded,
-          color: AppColors.textMuted),
+      subtitle: Text(subtitle,
+          style: TextStyle(color: colors.textSecondary, fontSize: 13)),
+      trailing: Icon(Icons.chevron_right_rounded, color: colors.textMuted),
       onTap: onTap,
     );
   }
@@ -423,27 +421,27 @@ class _ActionTile extends StatelessWidget {
 class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
-  final Color valueColor;
+  final Color? valueColor;
 
   const _InfoRow({
     required this.label,
     required this.value,
-    this.valueColor = AppColors.textPrimary,
+    this.valueColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 14)),
+              style: TextStyle(color: colors.textSecondary, fontSize: 14)),
           Text(value,
               style: TextStyle(
-                  color: valueColor,
+                  color: valueColor ?? colors.textPrimary,
                   fontSize: 14,
                   fontWeight: FontWeight.w600)),
         ],

@@ -19,7 +19,7 @@ class CallTypeHelpers {
       case CallTypeEnum.rejected:
         return AppColors.rejected;
       default:
-        return AppColors.textSecondary;
+        return const Color(0xFF9AA5B4);
     }
   }
 

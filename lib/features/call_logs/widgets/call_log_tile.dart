@@ -22,6 +22,7 @@ class CallLogGroupTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (group.calls.isEmpty) return const SizedBox.shrink();
 
+    final colors = context.colors;
     final lastCall = group.calls.first;
     final callColor = CallTypeHelpers.colorForType(group.lastCallType);
     final callIcon = CallTypeHelpers.iconForType(group.lastCallType);
@@ -57,7 +58,6 @@ class CallLogGroupTile extends ConsumerWidget {
                     ),
                   ),
                 ),
-                // Call type badge
                 Positioned(
                   bottom: 0,
                   right: 0,
@@ -67,7 +67,7 @@ class CallLogGroupTile extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: callColor,
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.background, width: 2),
+                      border: Border.all(color: colors.background, width: 2),
                     ),
                     child: Icon(callIcon, color: Colors.white, size: 10),
                   ),
@@ -75,7 +75,6 @@ class CallLogGroupTile extends ConsumerWidget {
               ],
             ),
             const SizedBox(width: 14),
-            // Name + number + type
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,9 +85,7 @@ class CallLogGroupTile extends ConsumerWidget {
                         child: Text(
                           displayName,
                           style: TextStyle(
-                            color: isMissed
-                                ? AppColors.missed
-                                : AppColors.textPrimary,
+                            color: isMissed ? AppColors.missed : colors.textPrimary,
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),
@@ -102,13 +99,13 @@ class CallLogGroupTile extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant,
+                            color: colors.surfaceVariant,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             '${group.totalCalls}',
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
+                            style: TextStyle(
+                              color: colors.textSecondary,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
@@ -130,31 +127,21 @@ class CallLogGroupTile extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Text('·',
-                          style: TextStyle(
-                              color: AppColors.textMuted, fontSize: 12)),
+                      Text('·', style: TextStyle(color: colors.textMuted, fontSize: 12)),
                       const SizedBox(width: 6),
                       if (lastCall.durationSeconds > 0) ...[
                         Text(
                           lastCall.durationSeconds.secondsToCallDuration,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: colors.textSecondary, fontSize: 12),
                         ),
                         const SizedBox(width: 6),
-                        const Text('·',
-                            style: TextStyle(
-                                color: AppColors.textMuted, fontSize: 12)),
+                        Text('·', style: TextStyle(color: colors.textMuted, fontSize: 12)),
                         const SizedBox(width: 6),
                       ],
                       Flexible(
                         child: Text(
                           timeago.format(lastCall.timestamp, locale: 'en_short'),
-                          style: const TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: colors.textMuted, fontSize: 12),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -163,18 +150,15 @@ class CallLogGroupTile extends ConsumerWidget {
                 ],
               ),
             ),
-            // Sync dot
             _SyncDot(status: lastCall.syncStatus),
             const SizedBox(width: 4),
-            // Call back icon
             IconButton(
               icon: const Icon(Icons.call_rounded),
               color: AppColors.primary,
               iconSize: 22,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-              onPressed: () => IntentUtils.launchDialer(
-                    context, group.phoneNumber),
+              onPressed: () => IntentUtils.launchDialer(context, group.phoneNumber),
             ),
           ],
         ),

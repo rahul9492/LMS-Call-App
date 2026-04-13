@@ -16,7 +16,7 @@ class CallTypeHelper {
       case CallType.rejected:
         return AppColors.rejected;
       default:
-        return AppColors.textSecondary;
+        return const Color(0xFF9AA5B4);
     }
   }
 
